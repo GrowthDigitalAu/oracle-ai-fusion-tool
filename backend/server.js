@@ -16,6 +16,11 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
+// Routes
+app.use('/api/organizations', require('./routes/organizationRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/roles', require('./routes/roleRoutes'));
+
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save
   .then(() => {
