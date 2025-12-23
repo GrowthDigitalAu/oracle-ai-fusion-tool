@@ -222,7 +222,7 @@ const User = () => {
                   <option value="">Select Organization</option>
                   {organizations.map((org) => (
                     <option key={org.organization_id} value={org.organization_id}>
-                      {org.name}
+                      {org.code}
                     </option>
                   ))}
                 </select>
