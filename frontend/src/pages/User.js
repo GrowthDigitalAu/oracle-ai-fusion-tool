@@ -133,7 +133,8 @@ const User = () => {
             <th>Email</th>
             <th>Organization</th>
             <th>Job Title</th>
-            <th>Admin</th>
+            <th>Organization Admin</th>
+            <th>Active</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -147,6 +148,7 @@ const User = () => {
                 <td>{user.Organization ? user.Organization.name : 'N/A'}</td>
                 <td>{user.job_title}</td>
                 <td>{user.is_org_admin ? 'Yes' : 'No'}</td>
+                <td>{user.is_active ? 'Yes' : 'No'}</td>
                 <td>
                   <button className="action-btn edit-btn" onClick={() => handleEdit(user)}>
                     <Pencil size={18} />
