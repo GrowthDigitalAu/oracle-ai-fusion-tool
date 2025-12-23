@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Pencil, Trash2 } from 'lucide-react';
 
 const User = () => {
   const [users, setUsers] = useState([]);
@@ -45,15 +46,60 @@ const User = () => {
     if (error) setError('');
   };
 
+  /* Logic Block */
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+
+  const handleEdit = (user) => {
+    setFormData({
+      email: user.email,
+      full_name: user.full_name || '',
+      job_title: user.job_title || '',
+      organization_id: user.organization_id || '',
+      is_org_admin: user.is_org_admin,
+      is_active: user.is_active
+    });
+    setCurrentId(user.id);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    try {
+      await fetch(`http://localhost:5000/api/users/${id}`, { method: 'DELETE' });
+      fetchUsers();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  };
+
+  const openAddModal = () => {
+    setFormData({
+      email: '',
+      full_name: '',
+      job_title: '',
+      organization_id: '',
+      is_org_admin: false,
+      is_active: true
+    });
+    setIsEditMode(false);
+    setCurrentId(null);
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:5000/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const url = isEditMode 
+        ? `http://localhost:5000/api/users/${currentId}`
+        : 'http://localhost:5000/api/users';
+      const method = isEditMode ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -61,21 +107,12 @@ const User = () => {
 
       if (response.ok && data.success) {
         setIsModalOpen(false);
-        setFormData({
-            email: '',
-            full_name: '',
-            job_title: '',
-            organization_id: '',
-            is_org_admin: false,
-            is_active: true
-        });
         fetchUsers();
       } else {
-        setError(data.error || 'Failed to create user');
+        setError(data.error || 'Failed to save user');
       }
     } catch (error) {
        setError('An error occurred. Please try again.');
-       // console.error('Error creating user:', error);
     }
   };
 
@@ -83,7 +120,7 @@ const User = () => {
     <div className="page-container">
       <div className="header-actions">
         <h1>Users</h1>
-        <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
+        <button className="btn-primary" onClick={openAddModal}>
           Add User
         </button>
       </div>
@@ -91,29 +128,38 @@ const User = () => {
       <table className="styled-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>S.No</th>
             <th>Name</th>
             <th>Email</th>
             <th>Organization</th>
             <th>Job Title</th>
             <th>Admin</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.length > 0 ? (
-            users.map((user) => (
+            users.map((user, index) => (
               <tr key={user.id}>
-                <td>{user.id}</td>
+                <td>{index + 1}</td>
                 <td>{user.full_name}</td>
                 <td>{user.email}</td>
                 <td>{user.Organization ? user.Organization.name : 'N/A'}</td>
                 <td>{user.job_title}</td>
                 <td>{user.is_org_admin ? 'Yes' : 'No'}</td>
+                <td>
+                  <button className="action-btn edit-btn" onClick={() => handleEdit(user)}>
+                    <Pencil size={18} />
+                  </button>
+                  <button className="action-btn delete-btn" onClick={() => handleDelete(user.id)}>
+                    <Trash2 size={18} />
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6">No users found</td>
+              <td colSpan="7">No users found</td>
             </tr>
           )}
         </tbody>
@@ -123,7 +169,7 @@ const User = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Add User</h2>
+              <h2>{isEditMode ? 'Edit User' : 'Add User'}</h2>
               <button className="close-btn" onClick={() => setIsModalOpen(false)}>
                 &times;
               </button>
