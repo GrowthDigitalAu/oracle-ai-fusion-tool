@@ -7,6 +7,7 @@ import User from './pages/User';
 import Roles from './pages/Roles';
 import AdminLogin from './pages/AdminLogin';
 import OrganizationLogin from './pages/OrganizationLogin';
+import AdminRoute from './components/AdminRoute';
 import './App.css';
 
 function App() {
@@ -19,7 +20,11 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/organization" element={<Organization />} />
+              <Route path="/organization" element={
+                <AdminRoute>
+                  <Organization />
+                </AdminRoute>
+              } />
               <Route path="/user" element={<User />} />
               <Route path="/roles" element={<Roles />} />
             </Routes>

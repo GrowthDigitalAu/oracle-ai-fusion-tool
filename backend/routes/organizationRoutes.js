@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Organization = require('../models/Organization');
 
-// Get all organizations
+const authMiddleware = require('../middleware/authMiddleware');
+const adminMiddleware = require('../middleware/adminMiddleware');
+
+// Get all organizations (Public for Login Dropdown)
 router.get('/', async (req, res) => {
   try {
     const organizations = await Organization.findAll({
@@ -14,8 +17,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create a new organization
-router.post('/', async (req, res) => {
+// Create a new organization (Protected: Admin Only)
+router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { name, code, plan_type, tenant_id, is_active } = req.body;
     const newOrganization = await Organization.create({
@@ -23,7 +26,9 @@ router.post('/', async (req, res) => {
       code,
       plan_type,
       tenant_id,
-      is_active
+      is_active,
+      created_by: req.user.id,
+      updated_by: req.user.id
     });
     res.status(201).json({ success: true, data: newOrganization });
   } catch (err) {
@@ -35,8 +40,8 @@ router.post('/', async (req, res) => {
 });
 
 
-// Update organization
-router.put('/:id', async (req, res) => {
+// Update organization (Protected: Admin Only)
+router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, code, plan_type, tenant_id, is_active } = req.body;
@@ -46,7 +51,14 @@ router.put('/:id', async (req, res) => {
       return res.status(200).json({ success: false, error: 'Organization not found' });
     }
 
-    await organization.update({ name, code, plan_type, tenant_id, is_active });
+    await organization.update({ 
+      name, 
+      code, 
+      plan_type, 
+      tenant_id, 
+      is_active,
+      updated_by: req.user.id
+    });
     res.json({ success: true, data: organization });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
@@ -56,8 +68,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete organization
-router.delete('/:id', async (req, res) => {
+// Delete organization (Protected: Admin Only)
+router.delete('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const organization = await Organization.findByPk(id);
@@ -66,6 +78,8 @@ router.delete('/:id', async (req, res) => {
       return res.status(200).json({ success: false, error: 'Organization not found' });
     }
 
+    // Set deleted_by before soft delete
+    await organization.update({ deleted_by: req.user.id });
     await organization.destroy();
     res.json({ success: true, message: 'Organization deleted successfully' });
   } catch (err) {

@@ -53,7 +53,13 @@ const Organization = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this organization?')) return;
     try {
-      await fetch(`http://localhost:5000/api/organizations/${id}`, { method: 'DELETE' });
+      const adminToken = localStorage.getItem('adminToken');
+      await fetch(`http://localhost:5000/api/organizations/${id}`, { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      });
       fetchOrganizations();
     } catch (error) {
       console.error('Error deleting organization:', error);
@@ -76,9 +82,13 @@ const Organization = () => {
         : 'http://localhost:5000/api/organizations';
       const method = isEditMode ? 'PUT' : 'POST';
 
+      const adminToken = localStorage.getItem('adminToken');
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
         body: JSON.stringify(formData),
       });
 
