@@ -25,11 +25,12 @@ const Sidebar = () => {
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/' },
     { name: 'Organization', icon: <Building2 size={20} />, path: '/organization', roles: ['Admin'] },
     { name: 'User', icon: <User size={20} />, path: '/user' }, // Visible to all for now, or update if needed
-    { name: 'Roles', icon: <UserCog size={20} />, path: '/roles' },
+    { name: 'Roles', icon: <UserCog size={20} />, path: '/roles', hideForRoles: ['Admin'] },
   ];
 
   // Filter items based on role
   const filteredItems = menuItems.filter(item => {
+    if (item.hideForRoles && item.hideForRoles.includes(role)) return false; // Hide if role is in hideForRoles
     if (!item.roles) return true; // Show if no specific roles defined
     return item.roles.includes(role);
   });

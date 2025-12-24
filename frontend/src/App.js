@@ -8,6 +8,7 @@ import Roles from './pages/Roles';
 import AdminLogin from './pages/AdminLogin';
 import OrganizationLogin from './pages/OrganizationLogin';
 import AdminRoute from './components/AdminRoute';
+import NonAdminRoute from './components/NonAdminRoute';
 import './App.css';
 
 function App() {
@@ -26,7 +27,11 @@ function App() {
                 </AdminRoute>
               } />
               <Route path="/user" element={<User />} />
-              <Route path="/roles" element={<Roles />} />
+              <Route path="/roles" element={
+                <NonAdminRoute>
+                  <Roles />
+                </NonAdminRoute>
+              } />
             </Routes>
           </Layout>
         } />

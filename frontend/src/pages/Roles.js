@@ -3,24 +3,30 @@ import { Pencil, Trash2 } from 'lucide-react';
 
 const Roles = () => {
   const [roles, setRoles] = useState([]);
-  const [organizations, setOrganizations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    is_default: false,
-    organization_id: ''
+    is_default: false
   });
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchRoles();
-    fetchOrganizations();
   }, []);
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/roles');
+      // Get appropriate token
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
+      const response = await fetch('http://localhost:5000/api/roles', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const data = await response.json();
       setRoles(data);
     } catch (error) {
@@ -28,15 +34,7 @@ const Roles = () => {
     }
   };
 
-  const fetchOrganizations = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/organizations');
-      const data = await response.json();
-      setOrganizations(data);
-    } catch (error) {
-      console.error('Error fetching organizations:', error);
-    }
-  };
+
 
   const handleInputChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -52,8 +50,7 @@ const Roles = () => {
     setFormData({
       name: role.name,
       description: role.description || '',
-      is_default: role.is_default,
-      organization_id: role.organization_id || ''
+      is_default: role.is_default
     });
     setCurrentId(role.id);
     setIsEditMode(true);
@@ -63,7 +60,17 @@ const Roles = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this role?')) return;
     try {
-      await fetch(`http://localhost:5000/api/roles/${id}`, { method: 'DELETE' });
+      // Get appropriate token
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
+      await fetch(`http://localhost:5000/api/roles/${id}`, { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       fetchRoles();
     } catch (error) {
       console.error('Error deleting role:', error);
@@ -74,8 +81,7 @@ const Roles = () => {
     setFormData({
       name: '',
       description: '',
-      is_default: false,
-      organization_id: ''
+      is_default: false
     });
     setIsEditMode(false);
     setCurrentId(null);
@@ -91,9 +97,17 @@ const Roles = () => {
         : 'http://localhost:5000/api/roles';
       const method = isEditMode ? 'PUT' : 'POST';
 
+      // Get appropriate token
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData),
       });
 
@@ -189,23 +203,7 @@ const Roles = () => {
                   rows="3"
                 />
               </div>
-              <div className="form-group">
-                <label>Organization</label>
-                <select
-                  name="organization_id"
-                  className="form-input"
-                  value={formData.organization_id}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select Organization</option>
-                  {organizations.map((org) => (
-                    <option key={org.organization_id} value={org.organization_id}>
-                      {org.code}
-                    </option>
-                  ))}
-                </select>
-              </div>
+
                <div className="form-group">
                  <label className="checkbox-label">
                     <input
