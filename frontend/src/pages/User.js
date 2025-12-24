@@ -10,19 +10,54 @@ const User = () => {
     full_name: '',
     job_title: '',
     organization_id: '',
-    is_org_admin: false,
     is_active: true
   });
   const [error, setError] = useState('');
 
   useEffect(() => {
+    checkPermission();
     fetchUsers();
     fetchOrganizations();
   }, []);
 
+  const [canDelete, setCanDelete] = useState(false);
+  const [currentUserRole, setCurrentUserRole] = useState('');
+  const [currentUserOrgId, setCurrentUserOrgId] = useState('');
+
+  const checkPermission = () => {
+    try {
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
+      if (!token) return;
+
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      setCurrentUserRole(payload.role);
+      setCurrentUserOrgId(payload.organization_id);
+
+      // Allow if Admin OR if Org User with is_org_admin = true
+      if (payload.role === 'Admin' || payload.is_org_admin === true) {
+        setCanDelete(true);
+      }
+    } catch (error) {
+      console.error('Error checking permission:', error);
+    }
+  };
+
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users');
+      // Get appropriate token
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
+      const response = await fetch('http://localhost:5000/api/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -56,7 +91,6 @@ const User = () => {
       full_name: user.full_name || '',
       job_title: user.job_title || '',
       organization_id: user.organization_id || '',
-      is_org_admin: user.is_org_admin,
       is_active: user.is_active
     });
     setCurrentId(user.id);
@@ -67,7 +101,17 @@ const User = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      await fetch(`http://localhost:5000/api/users/${id}`, { method: 'DELETE' });
+      // Get appropriate token
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
+      await fetch(`http://localhost:5000/api/users/${id}`, { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -79,8 +123,7 @@ const User = () => {
       email: '',
       full_name: '',
       job_title: '',
-      organization_id: '',
-      is_org_admin: false,
+      organization_id: currentUserRole === 'Admin' ? '' : currentUserOrgId,
       is_active: true
     });
     setIsEditMode(false);
@@ -97,9 +140,17 @@ const User = () => {
         : 'http://localhost:5000/api/users';
       const method = isEditMode ? 'PUT' : 'POST';
 
+      // Get appropriate token
+      const adminToken = localStorage.getItem('adminToken');
+      const orgToken = localStorage.getItem('orgToken');
+      const token = adminToken || orgToken;
+
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData),
       });
 
@@ -153,9 +204,11 @@ const User = () => {
                   <button className="action-btn edit-btn" onClick={() => handleEdit(user)}>
                     <Pencil size={18} />
                   </button>
-                  <button className="action-btn delete-btn" onClick={() => handleDelete(user.id)}>
-                    <Trash2 size={18} />
-                  </button>
+                  {canDelete && (
+                    <button className="action-btn delete-btn" onClick={() => handleDelete(user.id)}>
+                      <Trash2 size={18} />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))
@@ -210,34 +263,25 @@ const User = () => {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="form-group">
-                <label>Organization</label>
-                <select
-                  name="organization_id"
-                  className="form-input"
-                  value={formData.organization_id}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select Organization</option>
-                  {organizations.map((org) => (
-                    <option key={org.organization_id} value={org.organization_id}>
-                      {org.code}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                 <label className="checkbox-label">
-                    <input
-                        type="checkbox"
-                        name="is_org_admin"
-                        checked={formData.is_org_admin}
-                        onChange={handleInputChange}
-                    />
-                    Is Organization Admin
-                 </label>
-              </div>
+              {currentUserRole === 'Admin' && (
+                <div className="form-group">
+                  <label>Organization</label>
+                  <select
+                    name="organization_id"
+                    className="form-input"
+                    value={formData.organization_id}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Select Organization</option>
+                    {organizations.map((org) => (
+                      <option key={org.organization_id} value={org.organization_id}>
+                        {org.code}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="form-group">
                  <label className="checkbox-label">
                     <input
