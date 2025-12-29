@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Organization from './pages/Organization';
 import User from './pages/User';
 import Roles from './pages/Roles';
+import Projects from './pages/Projects';
 import AdminLogin from './pages/AdminLogin';
 import OrganizationLogin from './pages/OrganizationLogin';
 import AdminRoute from './components/AdminRoute';
@@ -30,6 +31,11 @@ function App() {
               <Route path="/roles" element={
                 <NonAdminRoute>
                   <Roles />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects" element={
+                <NonAdminRoute>
+                  <Projects />
                 </NonAdminRoute>
               } />
             </Routes>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, User, UserCog } from 'lucide-react';
+import { LayoutDashboard, Building2, User, UserCog, Folder } from 'lucide-react';
 
 const Sidebar = () => {
   // Decode Token to get Role
@@ -25,6 +25,7 @@ const Sidebar = () => {
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/' },
     { name: 'Organization', icon: <Building2 size={20} />, path: '/organization', roles: ['Admin'] },
     { name: 'User', icon: <User size={20} />, path: '/user' }, // Visible to all for now, or update if needed
+    { name: 'Projects', icon: <Folder size={20} />, path: '/projects', hideForRoles: ['Admin'] },
     { name: 'Roles', icon: <UserCog size={20} />, path: '/roles', hideForRoles: ['Admin'] },
   ];
 
