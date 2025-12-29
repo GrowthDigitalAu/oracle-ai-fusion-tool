@@ -5,6 +5,9 @@ import Dashboard from './pages/Dashboard';
 import Organization from './pages/Organization';
 import User from './pages/User';
 import Roles from './pages/Roles';
+import OrganizationUserRoles from './pages/OrganizationUserRoles';
+import Permissions from './pages/Permissions';
+import RolePermissions from './pages/RolePermissions';
 import Projects from './pages/Projects';
 import ProjectMembers from './pages/ProjectMembers';
 import AdminLogin from './pages/AdminLogin';
@@ -32,6 +35,21 @@ function App() {
               <Route path="/roles" element={
                 <NonAdminRoute>
                   <Roles />
+                </NonAdminRoute>
+              } />
+              <Route path="/user-roles" element={
+                <NonAdminRoute>
+                  <OrganizationUserRoles />
+                </NonAdminRoute>
+              } />
+               <Route path="/permissions" element={
+                <NonAdminRoute>
+                  <Permissions />
+                </NonAdminRoute>
+              } />
+              <Route path="/roles/:roleId/permissions" element={
+                <NonAdminRoute>
+                  <RolePermissions />
                 </NonAdminRoute>
               } />
               <Route path="/projects" element={

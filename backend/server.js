@@ -7,6 +7,9 @@ const Role = require('./models/Role');
 const AdminUser = require('./models/AdminUser');
 const Project = require('./models/Project');
 const ProjectMember = require('./models/ProjectMember');
+const Permission = require('./models/Permission');
+const RolePermission = require('./models/RolePermission');
+const OrganizationUserRole = require('./models/OrganizationUserRole');
 require('dotenv').config();
 
 const app = express();
@@ -27,6 +30,9 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/project-members', require('./routes/projectMemberRoutes'));
+app.use('/api/permissions', require('./routes/permissionRoutes'));
+app.use('/api/role-permissions', require('./routes/rolePermissionRoutes'));
+app.use('/api/organization-user-roles', require('./routes/organizationUserRoleRoutes'));
 
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save

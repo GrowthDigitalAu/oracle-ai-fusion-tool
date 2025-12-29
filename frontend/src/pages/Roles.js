@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Roles = () => {
   const [roles, setRoles] = useState([]);
@@ -149,7 +150,11 @@ const Roles = () => {
             roles.map((role, index) => (
               <tr key={role.id}>
                 <td>{index + 1}</td>
-                <td>{role.name}</td>
+                <td>
+                    <Link to={`/roles/${role.id}/permissions`} style={{ textDecoration: 'none', color: '#2563eb', fontWeight: '500' }}>
+                        {role.name}
+                    </Link>
+                </td>
                 <td>{role.description}</td>
                 <td>{role.Organization ? role.Organization.name : 'N/A'}</td>
                 <td>{role.is_default ? 'Yes' : 'No'}</td>
