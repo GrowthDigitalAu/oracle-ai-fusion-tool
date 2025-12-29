@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Projects = () => {
     const [projects, setProjects] = useState([]);
@@ -180,7 +181,11 @@ const Projects = () => {
                         projects.map((project) => (
                             <tr key={project.id}>
                                 <td>{project.code}</td>
-                                <td>{project.name}</td>
+                                <td>
+                                    <Link to={`/projects/${project.id}/members`} style={{ textDecoration: 'none', color: '#2563eb', fontWeight: '500' }}>
+                                        {project.name}
+                                    </Link>
+                                </td>
                                 <td>{project.description}</td>
                                 <td>
                                      <span className={`status-badge ${project.status === 'active' ? 'active' : 'inactive'}`}>
