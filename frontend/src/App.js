@@ -12,6 +12,7 @@ import Projects from './pages/Projects';
 import ProjectMembers from './pages/ProjectMembers';
 import AdminLogin from './pages/AdminLogin';
 import OrganizationLogin from './pages/OrganizationLogin';
+import Reports from './pages/Reports';
 import AdminRoute from './components/AdminRoute';
 import NonAdminRoute from './components/NonAdminRoute';
 import './App.css';
@@ -60,6 +61,11 @@ function App() {
               <Route path="/projects/:projectId/members" element={
                 <NonAdminRoute>
                   <ProjectMembers />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/tasks" element={
+                <NonAdminRoute>
+                  <Reports />
                 </NonAdminRoute>
               } />
             </Routes>

@@ -10,6 +10,7 @@ const ProjectMember = require('./models/ProjectMember');
 const Permission = require('./models/Permission');
 const RolePermission = require('./models/RolePermission');
 const OrganizationUserRole = require('./models/OrganizationUserRole');
+const Report = require('./models/Report');
 require('dotenv').config();
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/project-members', require('./routes/projectMemberRoutes'));
 app.use('/api/permissions', require('./routes/permissionRoutes'));
 app.use('/api/role-permissions', require('./routes/rolePermissionRoutes'));
 app.use('/api/organization-user-roles', require('./routes/organizationUserRoleRoutes'));
+app.use('/api', require('./routes/reportRoutes')); // Uses /api/projects/:pid/reports and /api/reports/:id
 
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save

@@ -173,6 +173,7 @@ const Projects = () => {
                         <th>Oracle Env</th>
                          <th>Start Date</th>
                          <th>End Date</th>
+                         <th>View</th>
                          <th>Actions</th>
                     </tr>
                 </thead>
@@ -181,20 +182,26 @@ const Projects = () => {
                         projects.map((project) => (
                             <tr key={project.id}>
                                 <td>{project.code}</td>
-                                <td>
-                                    <Link to={`/projects/${project.id}/members`} style={{ textDecoration: 'none', color: '#2563eb', fontWeight: '500' }}>
-                                        {project.name}
-                                    </Link>
-                                </td>
+                                <td>{project.name}</td>
                                 <td>{project.description}</td>
                                 <td>
                                      <span className={`status-badge ${project.status === 'active' ? 'active' : 'inactive'}`}>
                                         {project.status}
                                     </span>
                                 </td>
-                                <td>{project.oracle_env_name}</td>
+                                <td>{project.oracle_env_name || '-'}</td>
                                 <td>{project.start_date || '-'}</td>
                                 <td>{project.end_date || '-'}</td>
+                                <td>
+                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                        <Link to={`/projects/${project.id}/members`} className="btn-small btn-secondary">
+                                            Members
+                                        </Link>
+                                         <Link to={`/projects/${project.id}/tasks`} className="btn-small btn-secondary">
+                                            Tasks
+                                        </Link>
+                                    </div>
+                                </td>
                                 <td>
                                      <button className="action-btn edit-btn" onClick={() => handleEdit(project)}>
                                         <Pencil size={18} />
