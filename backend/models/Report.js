@@ -145,7 +145,6 @@ const Report = sequelize.define('Report', {
 Report.belongsTo(Organization, { foreignKey: 'organization_id' });
 Report.belongsTo(Project, { foreignKey: 'project_id' });
 
-Organization.hasMany(Report, { foreignKey: 'organization_id' });
 Project.hasMany(Report, { foreignKey: 'project_id' });
 
 module.exports = Report;

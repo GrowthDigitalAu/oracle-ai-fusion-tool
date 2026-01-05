@@ -11,6 +11,7 @@ const Permission = require('./models/Permission');
 const RolePermission = require('./models/RolePermission');
 const OrganizationUserRole = require('./models/OrganizationUserRole');
 const Report = require('./models/Report');
+const ReportRequirement = require('./models/ReportRequirement');
 require('dotenv').config();
 
 const app = express();
