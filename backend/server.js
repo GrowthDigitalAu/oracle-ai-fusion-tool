@@ -36,6 +36,7 @@ app.use('/api/permissions', require('./routes/permissionRoutes'));
 app.use('/api/role-permissions', require('./routes/rolePermissionRoutes'));
 app.use('/api/organization-user-roles', require('./routes/organizationUserRoleRoutes'));
 app.use('/api', require('./routes/reportRoutes')); // Uses /api/projects/:pid/reports and /api/reports/:id
+app.use('/api', require('./routes/reportRequirementRoutes'));
 
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save

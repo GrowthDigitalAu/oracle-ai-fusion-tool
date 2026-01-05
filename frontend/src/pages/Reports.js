@@ -181,7 +181,11 @@ const Reports = () => {
                         reports.map((report) => (
                             <tr key={report.id}>
                                 <td>{report.code}</td>
-                                <td>{report.name}</td>
+                                <td>
+                                    <Link to={`/projects/${projectId}/tasks/${report.id}`} style={{ color: '#2563eb', fontWeight: 'bold', textDecoration: 'none' }}>
+                                        {report.name}
+                                    </Link>
+                                </td>
                                 <td>
                                     <span className={`status-badge ${report.status === 'approved' ? 'active' : report.status === 'retired' ? 'inactive' : 'pending'}`}>
                                         {report.status}

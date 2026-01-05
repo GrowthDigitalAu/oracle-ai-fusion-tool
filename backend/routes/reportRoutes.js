@@ -8,7 +8,7 @@ router.get('/projects/:projectId/reports', protect, reportController.getReportsB
 router.post('/projects/:projectId/reports', protect, reportController.createReport);
 
 // Routes for individual report operations
-router.put('/:id', protect, reportController.updateReport);
-router.delete('/:id', protect, reportController.deleteReport);
+router.put('/reports/:id', protect, reportController.updateReport);
+router.delete('/reports/:id', protect, reportController.deleteReport);
 
 module.exports = router;

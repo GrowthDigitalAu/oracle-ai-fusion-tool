@@ -20,7 +20,6 @@ const ReportRequirement = sequelize.define('ReportRequirement', {
   report_id: {
     type: DataTypes.BIGINT,
     allowNull: false,
-    unique: true,
     references: {
       model: Report,
       key: 'id',
@@ -120,6 +119,6 @@ const ReportRequirement = sequelize.define('ReportRequirement', {
 // Relationships
 ReportRequirement.belongsTo(Organization, { foreignKey: 'organization_id' });
 ReportRequirement.belongsTo(Report, { foreignKey: 'report_id' });
-Report.hasOne(ReportRequirement, { foreignKey: 'report_id', onDelete: 'CASCADE' });
+Report.hasMany(ReportRequirement, { foreignKey: 'report_id', onDelete: 'CASCADE' });
 
 module.exports = ReportRequirement;
