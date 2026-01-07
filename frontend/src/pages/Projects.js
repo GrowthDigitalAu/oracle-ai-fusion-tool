@@ -197,8 +197,8 @@ const Projects = () => {
                                         <Link to={`/projects/${project.id}/members`} className="btn-small btn-secondary">
                                             Members
                                         </Link>
-                                         <Link to={`/projects/${project.id}/tasks`} className="btn-small btn-secondary">
-                                            Tasks
+                                         <Link to={`/projects/${project.id}/reports`} className="btn-small btn-secondary">
+                                             Reports
                                         </Link>
                                     </div>
                                 </td>

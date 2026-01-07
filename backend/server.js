@@ -12,6 +12,10 @@ const RolePermission = require('./models/RolePermission');
 const OrganizationUserRole = require('./models/OrganizationUserRole');
 const Report = require('./models/Report');
 const ReportRequirement = require('./models/ReportRequirement');
+const ReportParameter = require('./models/ReportParameter');
+const ReportSourceColumn = require('./models/ReportSourceColumn');
+const ReportAsset = require('./models/ReportAsset');
+const ReportConfig = require('./models/ReportConfig');
 require('dotenv').config();
 
 const app = express();
@@ -37,6 +41,10 @@ app.use('/api/role-permissions', require('./routes/rolePermissionRoutes'));
 app.use('/api/organization-user-roles', require('./routes/organizationUserRoleRoutes'));
 app.use('/api', require('./routes/reportRoutes')); // Uses /api/projects/:pid/reports and /api/reports/:id
 app.use('/api', require('./routes/reportRequirementRoutes'));
+app.use('/api', require('./routes/reportParameterRoutes'));
+app.use('/api', require('./routes/reportSourceColumnRoutes'));
+app.use('/api', require('./routes/reportAssetRoutes'));
+app.use('/api', require('./routes/reportConfigRoutes'));
 
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save

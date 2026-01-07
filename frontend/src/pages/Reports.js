@@ -97,7 +97,7 @@ const Reports = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this task?')) return;
+        if (!window.confirm('Are you sure you want to delete this report?')) return;
         try {
             const token = localStorage.getItem('orgToken');
             const response = await fetch(`http://localhost:5000/api/reports/${id}`, {
@@ -110,10 +110,10 @@ const Reports = () => {
             if (data.success) {
                 fetchReports();
             } else {
-                alert(data.error || 'Failed to delete task');
+                alert(data.error || 'Failed to delete report');
             }
         } catch (error) {
-            console.error('Error deleting task:', error);
+            console.error('Error deleting report:', error);
         }
     };
 
@@ -142,7 +142,7 @@ const Reports = () => {
                 setIsModalOpen(false);
                 fetchReports();
             } else {
-                setError(data.error || 'Failed to save task');
+                setError(data.error || 'Failed to save report');
             }
         } catch (error) {
             console.error('Submit error:', error);
@@ -157,10 +157,10 @@ const Reports = () => {
                     <Link to="/projects" className="btn-secondary" style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <ArrowLeft size={20} />
                     </Link>
-                    <h1>Tasks</h1>
+                    <h1>Reports</h1>
                 </div>
                 <button className="btn-primary" onClick={openAddModal}>
-                    Add Task
+                    Add Report
                 </button>
             </div>
 
@@ -173,7 +173,8 @@ const Reports = () => {
                         <th>Type</th>
                         <th>Output</th>
                         <th>Delivery</th>
-                         <th>Actions</th>
+                        <th>View</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -181,11 +182,7 @@ const Reports = () => {
                         reports.map((report) => (
                             <tr key={report.id}>
                                 <td>{report.code}</td>
-                                <td>
-                                    <Link to={`/projects/${projectId}/tasks/${report.id}`} style={{ color: '#2563eb', fontWeight: 'bold', textDecoration: 'none' }}>
-                                        {report.name}
-                                    </Link>
-                                </td>
+                                <td>{report.name}</td>
                                 <td>
                                     <span className={`status-badge ${report.status === 'approved' ? 'active' : report.status === 'retired' ? 'inactive' : 'pending'}`}>
                                         {report.status}
@@ -211,6 +208,35 @@ const Reports = () => {
                                     ].filter(Boolean).join(', ') || '-'}
                                 </td>
                                 <td>
+                                    <ul style={{ listStyle: 'disc', paddingLeft: '20px', margin: 0 }}>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Report Requirements
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}/parameters`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Report Parameters
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}/source-columns`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Source Columns
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}/assets`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Assets
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}/config`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Configuration
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>
                                     <button className="action-btn edit-btn" onClick={() => handleEdit(report)}>
                                         <Pencil size={18} />
                                     </button>
@@ -222,7 +248,7 @@ const Reports = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="7" className="empty-state">No tasks found</td>
+                            <td colSpan="8" className="empty-state">No reports found</td>
                         </tr>
                     )}
                 </tbody>
@@ -232,7 +258,7 @@ const Reports = () => {
                 <div className="modal-overlay">
                     <div className="modal-content" style={{ maxWidth: '800px' }}>
                         <div className="modal-header">
-                            <h2>{isEditMode ? 'Edit Task' : 'Add Task'}</h2>
+                            <h2>{isEditMode ? 'Edit Report' : 'Add Report'}</h2>
                             <button className="close-btn" onClick={() => setIsModalOpen(false)}>
                                 &times;
                             </button>
@@ -241,7 +267,7 @@ const Reports = () => {
                         <form onSubmit={handleSubmit}>
                             <div className="form-row" style={{ display: 'flex', gap: '15px' }}>
                                 <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Task Code</label>
+                                    <label>Report Code</label>
                                     <input
                                         type="text"
                                         name="code"
@@ -253,7 +279,7 @@ const Reports = () => {
                                     />
                                 </div>
                                 <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Task Name</label>
+                                    <label>Report Name</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -292,7 +318,7 @@ const Reports = () => {
                                     </select>
                                 </div>
                                 <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Task Type</label>
+                                    <label>Report Type</label>
                                     <input
                                         type="text"
                                         name="report_type"
@@ -317,7 +343,7 @@ const Reports = () => {
 
                             {formData.is_seeded_reconcile && (
                                 <div className="form-group">
-                                    <label>Seeded Task Name</label>
+                                    <label>Seeded Report Name</label>
                                     <input
                                         type="text"
                                         name="seeded_report_name"

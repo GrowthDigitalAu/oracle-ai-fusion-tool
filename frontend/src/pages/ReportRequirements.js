@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Pencil, Trash2 } from 'lucide-react';
 
 const ReportRequirements = () => {
-    const { projectId, taskId } = useParams(); // taskId corresponds to reportId
+    const { projectId, reportId } = useParams();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -40,12 +40,12 @@ const ReportRequirements = () => {
 
     useEffect(() => {
         fetchData();
-    }, [taskId]);
+    }, [reportId]);
 
     const fetchData = async () => {
         try {
             const token = localStorage.getItem('orgToken');
-            const reqResponse = await fetch(`http://localhost:5000/api/reports/${taskId}/requirements`, {
+            const reqResponse = await fetch(`http://localhost:5000/api/reports/${reportId}/requirements`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const reqData = await reqResponse.json();
@@ -122,8 +122,8 @@ const ReportRequirements = () => {
                 url = `http://localhost:5000/api/requirements/${currentRequirementId}`;
                 method = 'PUT';
             } else {
-                // Create new requirement for task
-                url = `http://localhost:5000/api/reports/${taskId}/requirements`;
+                // Create new requirement for report
+                url = `http://localhost:5000/api/reports/${reportId}/requirements`;
                 method = 'POST';
             }
 
@@ -177,10 +177,10 @@ const ReportRequirements = () => {
         <div className="page-container">
             <div className="header-actions">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Link to={`/projects/${projectId}/tasks`} className="btn-secondary" style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Link to={`/projects/${projectId}/reports`} className="btn-secondary" style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <ArrowLeft size={20} />
                     </Link>
-                    <h1>Task Requirements</h1>
+                    <h1>Report Requirements</h1>
                 </div>
                 <button className="btn-primary" onClick={() => openModal()}>
                     Add Requirements

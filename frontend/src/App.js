@@ -14,6 +14,10 @@ import AdminLogin from './pages/AdminLogin';
 import OrganizationLogin from './pages/OrganizationLogin';
 import Reports from './pages/Reports';
 import ReportRequirements from './pages/ReportRequirements';
+import ReportParameters from './pages/ReportParameters';
+import ReportSourceColumns from './pages/ReportSourceColumns';
+import ReportAssets from './pages/ReportAssets';
+import ReportConfig from './pages/ReportConfig';
 import AdminRoute from './components/AdminRoute';
 import NonAdminRoute from './components/NonAdminRoute';
 import './App.css';
@@ -64,14 +68,34 @@ function App() {
                   <ProjectMembers />
                 </NonAdminRoute>
               } />
-              <Route path="/projects/:projectId/tasks" element={
+              <Route path="/projects/:projectId/reports" element={
                 <NonAdminRoute>
                   <Reports />
                 </NonAdminRoute>
               } />
-              <Route path="/projects/:projectId/tasks/:taskId" element={
+              <Route path="/projects/:projectId/reports/:reportId" element={
                 <NonAdminRoute>
                   <ReportRequirements />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/reports/:reportId/parameters" element={
+                <NonAdminRoute>
+                  <ReportParameters />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/reports/:reportId/source-columns" element={
+                <NonAdminRoute>
+                  <ReportSourceColumns />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/reports/:reportId/assets" element={
+                <NonAdminRoute>
+                  <ReportAssets />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/reports/:reportId/config" element={
+                <NonAdminRoute>
+                  <ReportConfig />
                 </NonAdminRoute>
               } />
             </Routes>
