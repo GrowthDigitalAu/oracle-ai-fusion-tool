@@ -16,6 +16,8 @@ const ReportParameter = require('./models/ReportParameter');
 const ReportSourceColumn = require('./models/ReportSourceColumn');
 const ReportAsset = require('./models/ReportAsset');
 const ReportConfig = require('./models/ReportConfig');
+const ReportWorkflowInstance = require('./models/ReportWorkflowInstance');
+const ReportVersion = require('./models/ReportVersion');
 require('dotenv').config();
 
 const app = express();
@@ -45,6 +47,8 @@ app.use('/api', require('./routes/reportParameterRoutes'));
 app.use('/api', require('./routes/reportSourceColumnRoutes'));
 app.use('/api', require('./routes/reportAssetRoutes'));
 app.use('/api', require('./routes/reportConfigRoutes'));
+app.use('/api', require('./routes/reportWorkflowInstanceRoutes'));
+app.use('/api', require('./routes/reportVersionRoutes'));
 
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save

@@ -1,8 +1,8 @@
-const ReportSourceColumn = require('../models/ReportSourceColumn');
+const ReportVersion = require('../models/ReportVersion');
 const Report = require('../models/Report');
 
-// Get all source columns for a report
-exports.getReportSourceColumns = async (req, res) => {
+// Get all versions for a report
+exports.getReportVersions = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
@@ -16,24 +16,24 @@ exports.getReportSourceColumns = async (req, res) => {
       return res.status(404).json({ success: false, error: 'Report not found' });
     }
 
-    const columns = await ReportSourceColumn.findAll({
+    const versions = await ReportVersion.findAll({
       where: { report_id: reportId },
-      order: [['column_order', 'ASC']],
+      order: [['version_number', 'DESC']],
     });
 
-    res.json({ success: true, data: columns });
+    res.json({ success: true, data: versions });
   } catch (error) {
-    console.error('Error fetching report source columns:', error);
+    console.error('Error fetching report versions:', error);
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };
 
-// Create a new source column
-exports.createReportSourceColumn = async (req, res) => {
+// Create a new version
+exports.createReportVersion = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.id;
+    const userId = req.user.user_id;
 
     // Verify report belongs to user's organization
     const report = await Report.findOne({
@@ -44,7 +44,7 @@ exports.createReportSourceColumn = async (req, res) => {
       return res.status(404).json({ success: false, error: 'Report not found' });
     }
 
-    const column = await ReportSourceColumn.create({
+    const version = await ReportVersion.create({
       ...req.body,
       report_id: reportId,
       organization_id: organizationId,
@@ -52,67 +52,67 @@ exports.createReportSourceColumn = async (req, res) => {
       updated_by: userId,
     });
 
-    res.status(201).json({ success: true, data: column });
+    res.status(201).json({ success: true, data: version });
   } catch (error) {
-    console.error('Error creating source column:', error);
+    console.error('Error creating version:', error);
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ success: false, error: 'Column name already exists for this report' });
+      return res.status(400).json({ success: false, error: 'Version number already exists for this report' });
     }
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };
 
-// Update a source column
-exports.updateReportSourceColumn = async (req, res) => {
+// Update a version
+exports.updateReportVersion = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organization_id;
     const userId = req.user.user_id;
 
-    const column = await ReportSourceColumn.findOne({
+    const version = await ReportVersion.findOne({
       where: { id, organization_id: organizationId }
     });
 
-    if (!column) {
-      return res.status(404).json({ success: false, error: 'Source column not found' });
+    if (!version) {
+      return res.status(404).json({ success: false, error: 'Version not found' });
     }
 
-    await column.update({
+    await version.update({
       ...req.body,
       updated_by: userId,
     });
 
-    res.json({ success: true, data: column });
+    res.json({ success: true, data: version });
   } catch (error) {
-    console.error('Error updating source column:', error);
+    console.error('Error updating version:', error);
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ success: false, error: 'Column name already exists for this report' });
+      return res.status(400).json({ success: false, error: 'Version number already exists for this report' });
     }
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };
 
-// Delete a source column (soft delete)
-exports.deleteReportSourceColumn = async (req, res) => {
+// Delete a version (soft delete)
+exports.deleteReportVersion = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organization_id;
     const userId = req.user.user_id;
 
-    const column = await ReportSourceColumn.findOne({
+    const version = await ReportVersion.findOne({
       where: { id, organization_id: organizationId }
     });
 
-    if (!column) {
-      return res.status(404).json({ success: false, error: 'Source column not found' });
+    if (!version) {
+      return res.status(404).json({ success: false, error: 'Version not found' });
     }
 
-    await column.update({ deleted_by: userId });
-    await column.destroy();
+    await version.update({ deleted_by: userId });
+    await version.destroy();
 
-    res.json({ success: true, message: 'Source column deleted successfully' });
+    res.json({ success: true, message: 'Version deleted successfully' });
   } catch (error) {
-    console.error('Error deleting source column:', error);
+    console.error('Error deleting version:', error);
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };

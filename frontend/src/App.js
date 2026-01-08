@@ -18,6 +18,8 @@ import ReportParameters from './pages/ReportParameters';
 import ReportSourceColumns from './pages/ReportSourceColumns';
 import ReportAssets from './pages/ReportAssets';
 import ReportConfig from './pages/ReportConfig';
+import ReportWorkflowInstances from './pages/ReportWorkflowInstances';
+import ReportVersions from './pages/ReportVersions';
 import AdminRoute from './components/AdminRoute';
 import NonAdminRoute from './components/NonAdminRoute';
 import './App.css';
@@ -96,6 +98,16 @@ function App() {
               <Route path="/projects/:projectId/reports/:reportId/config" element={
                 <NonAdminRoute>
                   <ReportConfig />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/reports/:reportId/workflow-instances" element={
+                <NonAdminRoute>
+                  <ReportWorkflowInstances />
+                </NonAdminRoute>
+              } />
+              <Route path="/projects/:projectId/reports/:reportId/versions" element={
+                <NonAdminRoute>
+                  <ReportVersions />
                 </NonAdminRoute>
               } />
             </Routes>

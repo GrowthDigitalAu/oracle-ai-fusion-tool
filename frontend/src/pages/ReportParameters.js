@@ -157,7 +157,7 @@ const ReportParameters = () => {
             <table className="styled-table">
                 <thead>
                     <tr>
-                        <th>Order</th>
+                        <th>Param Order</th>
                         <th>Name</th>
                         <th>Prompt</th>
                         <th>Type</th>
@@ -212,7 +212,7 @@ const ReportParameters = () => {
                         <form onSubmit={handleSubmit}>
                             <div className="form-row" style={{ display: 'flex', gap: '15px' }}>
                                 <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Order</label>
+                                    <label>Param Order</label>
                                     <input
                                         type="number"
                                         name="param_order"

@@ -2,44 +2,51 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 
-const ReportSourceColumns = () => {
+const ReportWorkflowInstances = () => {
     const { projectId, reportId } = useParams();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [columns, setColumns] = useState([]);
-    const [currentColumnId, setCurrentColumnId] = useState(null);
+    const [instances, setInstances] = useState([]);
+    const [currentInstanceId, setCurrentInstanceId] = useState(null);
 
     const initialFormData = {
-        column_order: '',
-        column_name: '',
-        source_navigation: '',
-        data_type: '',
-        comments: ''
+        version_number: 1,
+        workflow_id: '',
+        current_step_order: '',
+        status: 'in_progress',
+        remark: ''
     };
 
     const [formData, setFormData] = useState(initialFormData);
 
+    const statusOptions = [
+        'in_progress',
+        'approved',
+        'rejected',
+        'cancelled'
+    ];
+
     useEffect(() => {
-        fetchColumns();
+        fetchInstances();
     }, [reportId]);
 
-    const fetchColumns = async () => {
+    const fetchInstances = async () => {
         try {
             const token = localStorage.getItem('orgToken');
-            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/source-columns`, {
+            const response = await fetch(`http://localhost:5000/api/reports/${reportId}/workflow-instances`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
 
             if (data.success && Array.isArray(data.data)) {
-                setColumns(data.data);
+                setInstances(data.data);
             } else {
-                setColumns([]);
+                setInstances([]);
             }
         } catch (error) {
-            console.error('Error fetching source columns:', error);
+            console.error('Error fetching workflow instances:', error);
         } finally {
             setLoading(false);
         }
@@ -50,18 +57,18 @@ const ReportSourceColumns = () => {
         setFormData({ ...formData, [e.target.name]: value });
     };
 
-    const openModal = (column = null) => {
-        if (column) {
-            setCurrentColumnId(column.id);
+    const openModal = (instance = null) => {
+        if (instance) {
+            setCurrentInstanceId(instance.id);
             setFormData({
-                column_order: column.column_order || '',
-                column_name: column.column_name || '',
-                source_navigation: column.source_navigation || '',
-                data_type: column.data_type || '',
-                comments: column.comments || ''
+                version_number: instance.version_number || 1,
+                workflow_id: instance.workflow_id || '',
+                current_step_order: instance.current_step_order || '',
+                status: instance.status || 'in_progress',
+                remark: instance.remark || ''
             });
         } else {
-            setCurrentColumnId(null);
+            setCurrentInstanceId(null);
             setFormData(initialFormData);
         }
         setIsModalOpen(true);
@@ -82,11 +89,11 @@ const ReportSourceColumns = () => {
             }, {});
 
             let url, method;
-            if (currentColumnId) {
-                url = `http://localhost:5000/api/source-columns/${currentColumnId}`;
+            if (currentInstanceId) {
+                url = `http://localhost:5000/api/workflow-instances/${currentInstanceId}`;
                 method = 'PUT';
             } else {
-                url = `http://localhost:5000/api/reports/${reportId}/source-columns`;
+                url = `http://localhost:5000/api/reports/${reportId}/workflow-instances`;
                 method = 'POST';
             }
 
@@ -101,9 +108,9 @@ const ReportSourceColumns = () => {
             const data = await response.json();
             if (response.ok && data.success) {
                 setIsModalOpen(false);
-                fetchColumns();
+                fetchInstances();
             } else {
-                setError(data.error || 'Failed to save source column');
+                setError(data.error || 'Failed to save workflow instance');
             }
         } catch (error) {
             console.error('Save error:', error);
@@ -114,10 +121,10 @@ const ReportSourceColumns = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this source column?')) return;
+        if (!window.confirm('Are you sure you want to delete this workflow instance?')) return;
         try {
             const token = localStorage.getItem('orgToken');
-            const response = await fetch(`http://localhost:5000/api/source-columns/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/workflow-instances/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -125,9 +132,9 @@ const ReportSourceColumns = () => {
             });
             const data = await response.json();
             if (response.ok && data.success) {
-                fetchColumns();
+                fetchInstances();
             } else {
-                alert(data.error || 'Failed to delete source column');
+                alert(data.error || 'Failed to delete workflow instance');
             }
         } catch (error) {
             console.error('Delete error:', error);
@@ -143,38 +150,47 @@ const ReportSourceColumns = () => {
                     <Link to={`/projects/${projectId}/reports/${reportId}`} className="btn-secondary" style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <ArrowLeft size={20} />
                     </Link>
-                    <h1>Report Source Columns</h1>
+                    <h1>Report Workflow Instances</h1>
                 </div>
                 <button className="btn-primary" onClick={() => openModal()}>
-                    Add Source Column
+                    Add Workflow Instance
                 </button>
             </div>
 
             <table className="styled-table">
                 <thead>
                     <tr>
-                        <th>Column Order</th>
-                        <th>Column Name</th>
-                        <th>Source Navigation</th>
-                        <th>Data Type</th>
-                        <th>Comments</th>
+                        <th>Version</th>
+                        <th>Workflow ID</th>
+                        <th>Current Step</th>
+                        <th>Status</th>
+                        <th>Created</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {columns.length > 0 ? (
-                        columns.map((col) => (
-                            <tr key={col.id}>
-                                <td>{col.column_order}</td>
-                                <td>{col.column_name}</td>
-                                <td>{col.source_navigation.length > 50 ? col.source_navigation.substring(0, 50) + '...' : col.source_navigation}</td>
-                                <td>{col.data_type || '-'}</td>
-                                <td>{col.comments ? (col.comments.length > 30 ? col.comments.substring(0, 30) + '...' : col.comments) : '-'}</td>
+                    {instances.length > 0 ? (
+                        instances.map((instance) => (
+                            <tr key={instance.id}>
+                                <td>{instance.version_number}</td>
+                                <td>{instance.workflow_id}</td>
+                                <td>{instance.current_step_order || '-'}</td>
                                 <td>
-                                    <button className="action-btn edit-btn" onClick={() => openModal(col)}>
+                                    <span className={`status-badge ${
+                                        instance.status === 'approved' ? 'active' : 
+                                        instance.status === 'rejected' ? 'inactive' : 
+                                        instance.status === 'cancelled' ? 'inactive' : 
+                                        'pending'
+                                    }`}>
+                                        {instance.status}
+                                    </span>
+                                </td>
+                                <td>{new Date(instance.created_at).toLocaleString()}</td>
+                                <td>
+                                    <button className="action-btn edit-btn" onClick={() => openModal(instance)}>
                                         <Pencil size={18} />
                                     </button>
-                                    <button className="action-btn delete-btn" onClick={() => handleDelete(col.id)}>
+                                    <button className="action-btn delete-btn" onClick={() => handleDelete(instance.id)}>
                                         <Trash2 size={18} />
                                     </button>
                                 </td>
@@ -182,7 +198,7 @@ const ReportSourceColumns = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="empty-state">No source columns defined</td>
+                            <td colSpan="6" className="empty-state">No workflow instances defined</td>
                         </tr>
                     )}
                 </tbody>
@@ -190,9 +206,9 @@ const ReportSourceColumns = () => {
 
             {isModalOpen && (
                 <div className="modal-overlay">
-                    <div className="modal-content" style={{ maxWidth: '700px' }}>
+                    <div className="modal-content" style={{ maxWidth: '600px' }}>
                         <div className="modal-header">
-                            <h2>{currentColumnId ? 'Edit Source Column' : 'Add Source Column'}</h2>
+                            <h2>{currentInstanceId ? 'Edit Workflow Instance' : 'Add Workflow Instance'}</h2>
                             <button className="close-btn" onClick={() => setIsModalOpen(false)}>
                                 &times;
                             </button>
@@ -202,64 +218,69 @@ const ReportSourceColumns = () => {
                         <form onSubmit={handleSubmit}>
                             <div className="form-row" style={{ display: 'flex', gap: '15px' }}>
                                 <div className="form-group" style={{ flex: 1 }}>
-                                    <label>Column Order</label>
+                                    <label>Version Number</label>
                                     <input
                                         type="number"
-                                        name="column_order"
+                                        name="version_number"
                                         className="form-input"
-                                        value={formData.column_order}
+                                        value={formData.version_number}
                                         onChange={handleInputChange}
                                         required
+                                        min="1"
                                     />
                                 </div>
-                                <div className="form-group" style={{ flex: 2 }}>
-                                    <label>Column Name</label>
+                                <div className="form-group" style={{ flex: 1 }}>
+                                    <label>Workflow ID</label>
                                     <input
-                                        type="text"
-                                        name="column_name"
+                                        type="number"
+                                        name="workflow_id"
                                         className="form-input"
-                                        value={formData.column_name}
+                                        value={formData.workflow_id}
                                         onChange={handleInputChange}
                                         required
-                                        maxLength="255"
                                     />
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <label>Source Navigation Path</label>
-                                <textarea
-                                    name="source_navigation"
-                                    className="form-input"
-                                    value={formData.source_navigation}
-                                    onChange={handleInputChange}
-                                    required
-                                    rows="3"
-                                    placeholder="e.g., Table.Field or Navigation Path"
-                                />
+                            <div className="form-row" style={{ display: 'flex', gap: '15px' }}>
+                                <div className="form-group" style={{ flex: 1 }}>
+                                    <label>Current Step Order</label>
+                                    <input
+                                        type="number"
+                                        name="current_step_order"
+                                        className="form-input"
+                                        value={formData.current_step_order}
+                                        onChange={handleInputChange}
+                                        placeholder="Optional"
+                                    />
+                                </div>
+                                <div className="form-group" style={{ flex: 1 }}>
+                                    <label>Status</label>
+                                    <select
+                                        name="status"
+                                        className="form-input"
+                                        value={formData.status}
+                                        onChange={handleInputChange}
+                                        required
+                                    >
+                                        {statusOptions.map(status => (
+                                            <option key={status} value={status}>
+                                                {status.replace('_', ' ').toUpperCase()}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="form-group">
-                                <label>Data Type</label>
+                                <label>Remark</label>
                                 <input
                                     type="text"
-                                    name="data_type"
+                                    name="remark"
                                     className="form-input"
-                                    value={formData.data_type}
+                                    value={formData.remark}
                                     onChange={handleInputChange}
-                                    maxLength="50"
-                                    placeholder="e.g., VARCHAR, NUMBER, DATE"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Comments</label>
-                                <textarea
-                                    name="comments"
-                                    className="form-input"
-                                    value={formData.comments}
-                                    onChange={handleInputChange}
-                                    rows="2"
+                                    maxLength="500"
                                 />
                             </div>
 
@@ -279,4 +300,4 @@ const ReportSourceColumns = () => {
     );
 };
 
-export default ReportSourceColumns;
+export default ReportWorkflowInstances;

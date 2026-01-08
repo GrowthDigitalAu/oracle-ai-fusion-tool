@@ -33,7 +33,7 @@ exports.createReportParameter = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     // Verify report belongs to user's organization
     const report = await Report.findOne({

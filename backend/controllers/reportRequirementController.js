@@ -79,7 +79,8 @@ exports.createRequirement = async (req, res) => {
         client_signoff_notes,
         notes,
         remark,
-        created_by: req.user.id
+        created_by: req.user.id,
+        updated_by: req.user.id
     });
 
     res.status(201).json({ success: true, data: requirement });

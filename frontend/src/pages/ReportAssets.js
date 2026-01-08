@@ -17,7 +17,7 @@ const ReportAssets = () => {
         is_active: true,
         inline_text: '',
         file_id: '',
-        remark: ''
+        file_id: ''
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -69,7 +69,7 @@ const ReportAssets = () => {
                 is_active: asset.is_active !== undefined ? asset.is_active : true,
                 inline_text: asset.inline_text || '',
                 file_id: asset.file_id || '',
-                remark: asset.remark || ''
+                file_id: asset.file_id || ''
             });
         } else {
             setCurrentAssetId(null);
@@ -272,7 +272,7 @@ const ReportAssets = () => {
                             </div>
 
                             <div className="form-group">
-                                <label>File ID (Optional)</label>
+                                <label>File ID</label>
                                 <input
                                     type="number"
                                     name="file_id"
@@ -280,18 +280,7 @@ const ReportAssets = () => {
                                     value={formData.file_id}
                                     onChange={handleInputChange}
                                     placeholder="Reference to uploaded file"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Remark</label>
-                                <input
-                                    type="text"
-                                    name="remark"
-                                    className="form-input"
-                                    value={formData.remark}
-                                    onChange={handleInputChange}
-                                    maxLength="500"
+                                    required
                                 />
                             </div>
 

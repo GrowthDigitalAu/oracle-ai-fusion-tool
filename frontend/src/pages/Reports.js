@@ -221,17 +221,27 @@ const Reports = () => {
                                         </li>
                                         <li>
                                             <Link to={`/projects/${projectId}/reports/${report.id}/source-columns`} style={{ color: '#2563eb', textDecoration: 'none' }}>
-                                                Source Columns
+                                                Report Source Columns
                                             </Link>
                                         </li>
                                         <li>
                                             <Link to={`/projects/${projectId}/reports/${report.id}/assets`} style={{ color: '#2563eb', textDecoration: 'none' }}>
-                                                Assets
+                                                Report Assets
                                             </Link>
                                         </li>
                                         <li>
                                             <Link to={`/projects/${projectId}/reports/${report.id}/config`} style={{ color: '#2563eb', textDecoration: 'none' }}>
-                                                Configuration
+                                                Report Configuration
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}/workflow-instances`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Report Workflow Instances
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to={`/projects/${projectId}/reports/${report.id}/versions`} style={{ color: '#2563eb', textDecoration: 'none' }}>
+                                                Report Versions
                                             </Link>
                                         </li>
                                     </ul>
