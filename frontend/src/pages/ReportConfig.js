@@ -11,8 +11,7 @@ const ReportConfig = () => {
     const [config, setConfig] = useState(null);
     
     const [formData, setFormData] = useState({
-        config: '{}',
-        remark: ''
+        config: '{}'
     });
 
     useEffect(() => {
@@ -47,13 +46,11 @@ const ReportConfig = () => {
     const openModal = () => {
         if (config) {
             setFormData({
-                config: JSON.stringify(config.config, null, 2),
-                remark: config.remark || ''
+                config: JSON.stringify(config.config, null, 2)
             });
         } else {
             setFormData({
-                config: '{}',
-                remark: ''
+                config: '{}'
             });
         }
         setIsModalOpen(true);
@@ -84,8 +81,7 @@ const ReportConfig = () => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    config: parsedConfig,
-                    remark: formData.remark || null
+                    config: parsedConfig
                 })
             });
             
@@ -225,18 +221,7 @@ const ReportConfig = () => {
                                 </small>
                             </div>
 
-                            <div className="form-group">
-                                <label>Remark</label>
-                                <input
-                                    type="text"
-                                    name="remark"
-                                    className="form-input"
-                                    value={formData.remark}
-                                    onChange={handleInputChange}
-                                    maxLength="500"
-                                    placeholder="Optional notes about this configuration"
-                                />
-                            </div>
+
 
                             <div style={{ marginTop: '20px', padding: '15px', background: '#f3f4f6', borderRadius: '8px' }}>
                                 <h4 style={{ marginTop: 0, marginBottom: '10px' }}>Configuration Example:</h4>

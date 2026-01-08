@@ -36,7 +36,7 @@ exports.upsertReportConfig = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     // Verify report belongs to user's organization
     const report = await Report.findOne({
@@ -47,17 +47,22 @@ exports.upsertReportConfig = async (req, res) => {
       return res.status(404).json({ success: false, error: 'Report not found' });
     }
 
-    // Check if config already exists
+    // Check if config already exists (including soft-deleted)
     let config = await ReportConfig.findOne({
-      where: { report_id: reportId }
+      where: { report_id: reportId },
+      paranoid: false
     });
 
     if (config) {
+      if (config.deleted_at) {
+        await config.restore();
+      }
       // Update existing config
       await config.update({
         config: req.body.config,
         remark: req.body.remark,
         updated_by: userId,
+        deleted_by: null
       });
     } else {
       // Create new config
@@ -79,7 +84,7 @@ exports.upsertReportConfig = async (req, res) => {
       message: error.message,
       stack: error.stack
     });
-    res.status(500).json({ success: false, error: 'Server error', details: error.message });
+    res.status(500).json({ success: false, error: error.message, details: error.message });
   }
 };
 
@@ -88,7 +93,7 @@ exports.deleteReportConfig = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     const config = await ReportConfig.findOne({
       where: { report_id: reportId, organization_id: organizationId }

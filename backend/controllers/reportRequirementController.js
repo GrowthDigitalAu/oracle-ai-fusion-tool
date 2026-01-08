@@ -53,6 +53,15 @@ exports.createRequirement = async (req, res) => {
          return res.status(404).json({ success: false, error: 'Report not found' });
     }
 
+    // Check if requirement already exists
+    const existingRequirement = await ReportRequirement.findOne({
+        where: { report_id: reportId }
+    });
+
+    if (existingRequirement) {
+        return res.status(400).json({ success: false, error: 'Requirement detailed already exists for this report' });
+    }
+
     const requirement = await ReportRequirement.create({
         report_id: reportId,
         organization_id: report.organization_id, // Inherit from report

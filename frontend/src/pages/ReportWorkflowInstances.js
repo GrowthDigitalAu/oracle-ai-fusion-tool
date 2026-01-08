@@ -16,7 +16,7 @@ const ReportWorkflowInstances = () => {
         workflow_id: '',
         current_step_order: '',
         status: 'in_progress',
-        remark: ''
+        status: 'in_progress'
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -65,7 +65,7 @@ const ReportWorkflowInstances = () => {
                 workflow_id: instance.workflow_id || '',
                 current_step_order: instance.current_step_order || '',
                 status: instance.status || 'in_progress',
-                remark: instance.remark || ''
+                status: instance.status || 'in_progress'
             });
         } else {
             setCurrentInstanceId(null);
@@ -272,17 +272,7 @@ const ReportWorkflowInstances = () => {
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <label>Remark</label>
-                                <input
-                                    type="text"
-                                    name="remark"
-                                    className="form-input"
-                                    value={formData.remark}
-                                    onChange={handleInputChange}
-                                    maxLength="500"
-                                />
-                            </div>
+
 
                             <div className="form-actions">
                                 <button type="button" className="btn-secondary" onClick={() => setIsModalOpen(false)}>

@@ -33,7 +33,7 @@ exports.createReportVersion = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     // Verify report belongs to user's organization
     const report = await Report.findOne({
@@ -67,7 +67,7 @@ exports.updateReportVersion = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     const version = await ReportVersion.findOne({
       where: { id, organization_id: organizationId }
@@ -97,7 +97,7 @@ exports.deleteReportVersion = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     const version = await ReportVersion.findOne({
       where: { id, organization_id: organizationId }

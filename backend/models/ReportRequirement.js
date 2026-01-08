@@ -119,6 +119,6 @@ const ReportRequirement = sequelize.define('ReportRequirement', {
 // Relationships
 ReportRequirement.belongsTo(Organization, { foreignKey: 'organization_id' });
 ReportRequirement.belongsTo(Report, { foreignKey: 'report_id' });
-Report.hasMany(ReportRequirement, { foreignKey: 'report_id', onDelete: 'CASCADE' });
+Report.hasOne(ReportRequirement, { foreignKey: 'report_id', onDelete: 'CASCADE' });
 
 module.exports = ReportRequirement;

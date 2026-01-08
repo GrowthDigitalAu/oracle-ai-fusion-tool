@@ -15,8 +15,7 @@ const ReportVersions = () => {
         version_number: '',
         status: 'draft',
         change_summary: '',
-        snapshot: '{}',
-        remark: ''
+        snapshot: '{}'
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -65,8 +64,7 @@ const ReportVersions = () => {
                 version_number: version.version_number || '',
                 status: version.status || 'draft',
                 change_summary: version.change_summary || '',
-                snapshot: version.snapshot ? JSON.stringify(version.snapshot, null, 2) : '{}',
-                remark: version.remark || ''
+                snapshot: version.snapshot ? JSON.stringify(version.snapshot, null, 2) : '{}'
             });
         } else {
             setCurrentVersionId(null);
@@ -112,8 +110,7 @@ const ReportVersions = () => {
                 version_number: formData.version_number,
                 status: formData.status,
                 change_summary: formData.change_summary || null,
-                snapshot: parsedSnapshot,
-                remark: formData.remark || null
+                snapshot: parsedSnapshot
             };
 
             let url, method;
@@ -199,7 +196,7 @@ const ReportVersions = () => {
                     {versions.length > 0 ? (
                         versions.map((version) => (
                             <tr key={version.id}>
-                                <td><strong>v{version.version_number}</strong></td>
+                                <td>{version.version_number}</td>
                                 <td>
                                     <span className={`status-badge ${
                                         version.status === 'approved' ? 'active' : 
@@ -305,17 +302,7 @@ const ReportVersions = () => {
                                 </small>
                             </div>
 
-                            <div className="form-group">
-                                <label>Remark</label>
-                                <input
-                                    type="text"
-                                    name="remark"
-                                    className="form-input"
-                                    value={formData.remark}
-                                    onChange={handleInputChange}
-                                    maxLength="500"
-                                />
-                            </div>
+
 
                             <div className="form-actions">
                                 <button type="button" className="btn-secondary" onClick={() => setIsModalOpen(false)}>

@@ -182,8 +182,8 @@ const ReportRequirements = () => {
                     </Link>
                     <h1>Report Requirements</h1>
                 </div>
-                <button className="btn-primary" onClick={() => openModal()}>
-                    Add Requirements
+                <button className="btn-primary" onClick={() => openModal(requirements.length > 0 ? requirements[0] : null)}>
+                    {requirements.length > 0 ? 'Edit Requirements' : 'Add Requirements'}
                 </button>
             </div>
 

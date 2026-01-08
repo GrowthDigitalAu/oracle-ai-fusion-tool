@@ -33,7 +33,7 @@ exports.createReportWorkflowInstance = async (req, res) => {
   try {
     const { reportId } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     // Verify report belongs to user's organization
     const report = await Report.findOne({
@@ -64,7 +64,7 @@ exports.updateReportWorkflowInstance = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     const instance = await ReportWorkflowInstance.findOne({
       where: { id, organization_id: organizationId }
@@ -91,7 +91,7 @@ exports.deleteReportWorkflowInstance = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organization_id;
-    const userId = req.user.user_id;
+    const userId = req.user.id;
 
     const instance = await ReportWorkflowInstance.findOne({
       where: { id, organization_id: organizationId }
