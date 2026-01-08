@@ -18,6 +18,11 @@ const ReportAsset = require('./models/ReportAsset');
 const ReportConfig = require('./models/ReportConfig');
 const ReportWorkflowInstance = require('./models/ReportWorkflowInstance');
 const ReportVersion = require('./models/ReportVersion');
+const AuditLog = require('./models/AuditLog');
+const ReportWorkflowAction = require('./models/ReportWorkflowAction');
+const ApprovalWorkflow = require('./models/ApprovalWorkflow');
+const ApprovalWorkflowStep = require('./models/ApprovalWorkflowStep');
+const File = require('./models/File');
 require('dotenv').config();
 
 const app = express();
@@ -49,6 +54,11 @@ app.use('/api', require('./routes/reportAssetRoutes'));
 app.use('/api', require('./routes/reportConfigRoutes'));
 app.use('/api', require('./routes/reportWorkflowInstanceRoutes'));
 app.use('/api', require('./routes/reportVersionRoutes'));
+app.use('/api', require('./routes/auditLogRoutes'));
+app.use('/api', require('./routes/reportWorkflowActionRoutes'));
+app.use('/api', require('./routes/approvalWorkflowRoutes'));
+app.use('/api', require('./routes/approvalWorkflowStepRoutes'));
+app.use('/api', require('./routes/fileRoutes'));
 
 // Sync Database and Start Server
 sequelize.sync({ force: false }) // Set force: true to drop and re-create tables on every save
