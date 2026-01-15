@@ -24,10 +24,7 @@ const Organization = sequelize.define('Organization', {
   plan_type: {
     type: DataTypes.STRING(50),
   },
-  // Audit (self-tenant)
-  tenant_id: {
-    type: DataTypes.BIGINT,
-  },
+  // Audit fields
   created_by: {
     type: DataTypes.BIGINT,
   },

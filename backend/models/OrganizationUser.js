@@ -11,6 +11,7 @@ const OrganizationUser = sequelize.define('OrganizationUser', {
   email: {
     type: DataTypes.STRING(255),
     allowNull: false,
+    unique: true,
   },
   password_hash: {
     type: DataTypes.TEXT,
@@ -51,10 +52,6 @@ const OrganizationUser = sequelize.define('OrganizationUser', {
   updatedAt: 'updated_at',
   deletedAt: 'deleted_at',
   indexes: [
-    {
-      unique: true,
-      fields: ['organization_id', 'email'],
-    },
     {
       fields: ['organization_id'],
       name: 'idx_org_users_org',

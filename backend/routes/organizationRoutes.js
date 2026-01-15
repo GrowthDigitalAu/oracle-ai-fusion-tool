@@ -20,12 +20,11 @@ router.get('/', async (req, res) => {
 // Create a new organization (Protected: Admin Only)
 router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, code, plan_type, tenant_id, is_active } = req.body;
+    const { name, code, plan_type, is_active } = req.body;
     const newOrganization = await Organization.create({
       name,
       code,
       plan_type,
-      tenant_id,
       is_active,
       created_by: req.user.id,
       updated_by: req.user.id
@@ -44,7 +43,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, code, plan_type, tenant_id, is_active } = req.body;
+    const { name, code, plan_type, is_active } = req.body;
     
     const organization = await Organization.findByPk(id);
     if (!organization) {
@@ -55,7 +54,6 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
       name, 
       code, 
       plan_type, 
-      tenant_id, 
       is_active,
       updated_by: req.user.id
     });

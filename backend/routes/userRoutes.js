@@ -123,7 +123,7 @@ router.post('/', authMiddleware, async (req, res) => {
     res.status(201).json({ success: true, data: newUser });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
-      return res.status(200).json({ success: false, error: 'This Email is already associated with this Organization.' });
+      return res.status(200).json({ success: false, error: 'This email address is already in use.' });
     }
     res.status(200).json({ success: false, error: err.message });
   }
@@ -156,7 +156,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     res.json({ success: true, data: user });
   } catch (err) {
      if (err.name === 'SequelizeUniqueConstraintError') {
-      return res.status(200).json({ success: false, error: 'Email already exists.' });
+      return res.status(200).json({ success: false, error: 'This email address is already in use.' });
     }
     res.status(200).json({ success: false, error: err.message });
   }

@@ -8,7 +8,6 @@ const Organization = () => {
     name: '',
     code: '',
     plan_type: 'Basic',
-    tenant_id: '',
     is_active: true
   });
 
@@ -42,7 +41,6 @@ const Organization = () => {
       name: org.name,
       code: org.code,
       plan_type: org.plan_type,
-      tenant_id: org.tenant_id,
       is_active: org.is_active
     });
     setCurrentId(org.organization_id);
@@ -67,7 +65,7 @@ const Organization = () => {
   };
 
   const openAddModal = () => {
-    setFormData({ name: '', code: '', plan_type: 'Basic', tenant_id: '', is_active: true });
+    setFormData({ name: '', code: '', plan_type: 'Basic', is_active: true });
     setIsEditMode(false);
     setCurrentId(null);
     setIsModalOpen(true);
@@ -197,16 +195,6 @@ const Organization = () => {
                   <option value="Premium">Premium</option>
                   <option value="Enterprise">Enterprise</option>
                 </select>
-              </div>
-              <div className="form-group">
-                <label>Tenant ID (Optional)</label>
-                <input
-                  type="number"
-                  name="tenant_id"
-                  className="form-input"
-                  value={formData.tenant_id}
-                  onChange={handleInputChange}
-                />
               </div>
               <div className="form-group">
                  <label className="checkbox-label">
