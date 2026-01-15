@@ -10,6 +10,9 @@ const Reports = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [currentId, setCurrentId] = useState(null);
     const [error, setError] = useState('');
+    const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
+    const [currentSqlReportId, setCurrentSqlReportId] = useState(null);
+    const [sqlQuery, setSqlQuery] = useState('');
 
     const initialFormState = {
         code: '',
@@ -150,6 +153,38 @@ const Reports = () => {
         }
     };
 
+    const openSqlModal = (report) => {
+        setCurrentSqlReportId(report.id);
+        setSqlQuery(report.sql_query || '');
+        setIsSqlModalOpen(true);
+    };
+
+    const handleSaveSql = async () => {
+        try {
+            const token = localStorage.getItem('orgToken');
+            const response = await fetch(`http://localhost:5000/api/reports/${currentSqlReportId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ sql_query: sqlQuery }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setIsSqlModalOpen(false);
+                fetchReports(); // Refresh list to get updated data
+            } else {
+                alert(data.error || 'Failed to save SQL query');
+            }
+        } catch (error) {
+            console.error('Error saving SQL query:', error);
+            alert('An error occurred while saving the SQL query.');
+        }
+    };
+
     return (
         <div className="page-container">
             <div className="header-actions">
@@ -174,6 +209,7 @@ const Reports = () => {
                         <th>Output</th>
                         <th>Delivery</th>
                         <th>View</th>
+                        <th>SQL</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -245,6 +281,14 @@ const Reports = () => {
                                             </Link>
                                         </li>
                                     </ul>
+                                </td>
+                                <td>
+                                    <button 
+                                        className="btn-sql-action" 
+                                        onClick={() => openSqlModal(report)}
+                                    >
+                                        {report.sql_query ? 'Edit Sql' : 'Add Sql'}
+                                    </button>
                                 </td>
                                 <td>
                                     <button className="action-btn edit-btn" onClick={() => handleEdit(report)}>
@@ -416,6 +460,44 @@ const Reports = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+            {isSqlModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content" style={{ maxWidth: '600px', width: '90%' }}>
+                        <div className="modal-header">
+                            <h2>Edit SQL Query</h2>
+                            <button className="close-btn" onClick={() => setIsSqlModalOpen(false)}>
+                                &times;
+                            </button>
+                        </div>
+                        <div style={{ padding: '20px 0' }}>
+                           <textarea
+                                className="form-input"
+                                rows="10"
+                                value={sqlQuery}
+                                onChange={(e) => setSqlQuery(e.target.value)}
+                                placeholder="Enter SQL query here..."
+                                style={{ fontFamily: 'monospace' }}
+                           />
+                        </div>
+                        <div className="form-actions">
+                            <button
+                                type="button"
+                                className="btn-secondary"
+                                onClick={() => setIsSqlModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                className="btn-primary"
+                                onClick={handleSaveSql}
+                            >
+                                Save
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

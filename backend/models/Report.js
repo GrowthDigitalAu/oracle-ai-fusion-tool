@@ -42,6 +42,10 @@ const Report = sequelize.define('Report', {
     allowNull: false,
     defaultValue: 'BI_PUBLISHER',
   },
+  sql_query: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
   status: {
     type: DataTypes.STRING(50),
     allowNull: false,

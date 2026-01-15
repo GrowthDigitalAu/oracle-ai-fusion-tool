@@ -109,6 +109,7 @@ exports.updateReport = async (req, res) => {
       delivery_email,
       delivery_system,
       remark,
+      sql_query,
     } = req.body;
 
     const report = await Report.findByPk(id);
@@ -135,6 +136,7 @@ exports.updateReport = async (req, res) => {
       delivery_email,
       delivery_system,
       remark,
+      sql_query,
       updated_by: req.user.id,
     });
 
