@@ -467,7 +467,7 @@ const Reports = () => {
                 <div className="modal-overlay">
                     <div className="modal-content" style={{ maxWidth: '600px', width: '90%' }}>
                         <div className="modal-header">
-                            <h2>Edit SQL Query</h2>
+                            <h2>SQL Query</h2>
                             <button className="close-btn" onClick={() => setIsSqlModalOpen(false)}>
                                 &times;
                             </button>
