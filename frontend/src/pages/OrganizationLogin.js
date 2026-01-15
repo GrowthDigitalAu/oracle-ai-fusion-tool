@@ -5,37 +5,12 @@ import './Login.css';
 const OrganizationLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [organizationCode, setOrganizationCode] = useState('');
-  const [organizations, setOrganizations] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  // Fetch Organizations on Mount
-  useEffect(() => {
-    const fetchOrganizations = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/organizations');
-        if (response.ok) {
-          const data = await response.json();
-          setOrganizations(data);
-        } else {
-          console.error("Failed to fetch organizations");
-        }
-      } catch (err) {
-        console.error("Error fetching organizations:", err);
-      }
-    };
-    fetchOrganizations();
-  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (!organizationCode) {
-      setError('Please select an Organization Code.');
-      return;
-    }
 
     try {
       const response = await fetch('http://localhost:5000/api/users/login', {
@@ -45,8 +20,7 @@ const OrganizationLogin = () => {
         },
         body: JSON.stringify({ 
           email, 
-          password,
-          organization_code: organizationCode 
+          password
         }),
       });
 
@@ -74,23 +48,7 @@ const OrganizationLogin = () => {
         
         <form onSubmit={handleLogin}>
           
-          {/* Organization Code Dropdown */}
-          <div className="form-group">
-            <label className="form-label">Organization Code</label>
-            <select
-              className="form-select" // Use customized select
-              value={organizationCode}
-              onChange={(e) => setOrganizationCode(e.target.value)}
-              required
-            >
-              <option value="">-- Select Code --</option>
-              {organizations.map((org) => (
-                <option key={org.organization_id} value={org.code}>
-                  {org.code} ({org.name})
-                </option>
-              ))}
-            </select>
-          </div>
+
 
           <div className="form-group">
             <label className="form-label">Email Address</label>

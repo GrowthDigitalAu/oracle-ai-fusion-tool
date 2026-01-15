@@ -8,23 +8,17 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Organization User Login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password, organization_code } = req.body; // Accept organization_code
-    console.log('Login Attempt:', { email, organization_code });
+    const { email, password } = req.body;
+    console.log('Login Attempt:', { email });
 
     // 1. Check if user exists
-    // We can also verify if the user belongs to the org with checking the code
     const user = await OrganizationUser.findOne({ 
-      where: { email },
-      include: [{
-        model: Organization,
-        where: { code: organization_code } // Verify Org Code matches the User's Org
-      }]
+      where: { email }
     });
 
     if (!user) {
-      console.log('User not found or Org Code mismatch');
-      // It basically means either user not found OR user doesn't belong to that Org Code
-      return res.status(200).json({ success: false, error: 'Invalid credentials or Organization Code' });
+      console.log('User not found');
+      return res.status(200).json({ success: false, error: 'Invalid credentials' });
     }
 
     console.log('User found:', user.email);
